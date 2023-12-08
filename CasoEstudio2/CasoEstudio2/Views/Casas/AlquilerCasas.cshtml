@@ -1,0 +1,77 @@
+﻿@model IEnumerable<CasoEstudio2.Entity.CasasEntity>
+
+@{
+    ViewBag.Title = "AlquilerCasas";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Alquiler de Casas</h4>
+
+                    @if (ViewBag.MensajeUsuario != null)
+                    {
+                        <div class="alert alert-danger" role="alert" style="text-align:center">
+                            @ViewBag.MensajeUsuario
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("AlquilerCasas", "Casas", FormMethod.Post, new { @class = "pt-3", @enctype = "multipart/form-data", @id = "formularioAlquiler" }))
+                    {
+                        <div class="form-group">
+                            <label for="ddlCasas">Casas Disponibles</label>
+                            @Html.DropDownListFor(m => m.First().IdCasa, new SelectList(Model.Where(x => x.UsuarioAlquiler == null), "IdCasa", "DescripcionCasa"), "Seleccione una casa", new { @class = "form-control form-control-lg", @id = "ddlCasas" })
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtPrecio">Precio</label>
+                            @Html.TextBoxFor(m => m.First().PrecioCasa, new { @class = "form-control form-control-lg", @placeholder = "Precio", @type = "number", @id = "txtPrecio", @readonly = "readonly" })
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtUsuario">Tu nombre de usuario</label>
+                            @Html.TextBoxFor(m => m.First().UsuarioAlquiler, new { @class = "form-control form-control-lg", @placeholder = "Tu Nombre", @type = "text", @id = "txtUsuario" })
+                        </div>
+
+                        @Html.HiddenFor(m => m.First().IdCasa)
+
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Procesar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    // Actualizar el valor del campo de precio al cambiar la selección
+    $("#ddlCasas").change(function () {
+        var selectedCasaID = $(this).val();
+        var selectedCasa = obtenerCasaPorId(selectedCasaID);
+        $("#txtPrecio").val(selectedCasa.PrecioCasa);
+
+        // Actualizar los valores de los campos ocultos
+        $("#hiddenCasaID").val(selectedCasaID);
+    });
+
+    // Manejar el evento de envío del formulario
+    $("#formularioAlquiler").submit(function () {
+        // Obtener el valor del usuario y asignarlo al campo oculto
+        var Usuario = $("#txtUsuario").val();
+        $("#hiddenUsuarioAlquiler").val(Usuario);
+    });
+
+    // Función para obtener una casa por ID
+    function obtenerCasaPorId(IdCasa) {
+        var casas = @Html.Raw(Json.Encode(Model));
+        for (var i = 0; i < casas.length; i++) {
+            if (casas[i].IdCasa == IdCasa) {
+                return casas[i];
+            }
+        }
+        return null;
+    }
+</script>

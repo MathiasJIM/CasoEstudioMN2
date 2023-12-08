@@ -1,0 +1,42 @@
+﻿@model List<CasoEstudio2.Entity.CasasEntity>
+
+@{
+    ViewBag.Title = "ConsultaCasas";
+}
+
+<h2>Consulta de Casas</h2>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Usuario</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var casa in Model)
+            {
+                <tr>
+                    <td>@casa.DescripcionCasa</td>
+                    <td>@casa.PrecioCasa.ToString("C")</td>
+                    <td>@casa.UsuarioAlquiler</td>
+                    <td>
+                        @if (casa.FechaAlquiler.HasValue)
+                        {
+                            <span class="text-black">Reservada</span>
+                        }
+                        else
+                        {
+                            <span class="text-black">Disponible</span>
+                        }
+                    </td>
+                    <td>@casa.FechaAlquiler</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
